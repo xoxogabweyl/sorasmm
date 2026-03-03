@@ -1,6 +1,6 @@
 [build]
 builder = "NIXPACKS"
-buildCommand = "pip install -r requirements.txt"
+buildCommand = "python -m ensurepip --upgrade && python -m pip install --upgrade pip && python -m pip install -r requirements.txt"
 
 [deploy]
 startCommand = "gunicorn run:app --bind 0.0.0.0:$PORT --workers 2"
