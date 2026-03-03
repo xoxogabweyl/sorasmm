@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="admin-reference-page">
+  <div class="admin-reference-shell">
+    <form class="admin-reference-toolbar" method="get">
+      <strong>User Management</strong>
+      <input class="form-control form-control-sm ms-2 search-input" name="q" value="{{ user_q or '' }}" placeholder="Search by ID, username...">
+      <button type="submit" class="btn btn-sm btn-admin-search">Search</button>
+    </form>
+
+    <div class="admin-hub-panel p-3 border-bottom">
+      <h6 class="mb-3">Create New User</h6>
+      <form method="post" class="row g-2">
+        <input type="hidden" name="admin_action" value="create_user">
+        <div class="col-md-3">
+          <input class="form-control form-control-sm" name="username" placeholder="Username" required>
+        </div>
+        <div class="col-md-3">
+          <input class="form-control form-control-sm" type="email" name="email" placeholder="Email" required>
+        </div>
+        <div class="col-md-3">
+          <input class="form-control form-control-sm" type="password" name="password" placeholder="Password (min 6)" minlength="6" required>
+        </div>
+        <div class="col-md-2">
+          <input class="form-control form-control-sm" type="number" step="0.01" min="0" name="initial_balance" placeholder="Initial Balance">
+        </div>
+        <div class="col-md-1 d-grid">
+          <button class="btn btn-sm btn-user-action">Create</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="admin-hub-panel users-table-wrap">
+      <table class="table mb-0 users-table">
+        <thead><tr><th>ID</th><th>Username</th><th>Email</th><th>Balance</th><th>Status</th><th>Created</th><th>Adjust Balance</th><th>Actions</th></tr></thead>
+        <tbody>
+          {% for u in users %}
+          <tr>
+            <td data-label="ID">{{ u.id }}</td>
+            <td data-label="Username">{{ u.username }}</td>
+            <td data-label="Email">{{ u.email }}</td>
+            <td data-label="Balance">${{ '%.2f'|format(u.balance) }}</td>
+            <td data-label="Status">
+              {% if u.is_banned %}
+              <span class="badge text-bg-danger">banned</span>
+              {% else %}
+              <span class="badge text-bg-success">active</span>
+              {% endif %}
+            </td>
+            <td data-label="Created">{{ u.created_at.strftime('%Y-%m-%d') }}</td>
+            <td data-label="Adjust Balance">
+              <form method="post" class="d-flex gap-2">
+                <input type="hidden" name="admin_action" value="adjust_balance">
+                <input type="hidden" name="user_id" value="{{ u.id }}">
+                <select class="form-select form-select-sm" name="action">
+                  <option value="add">Add</option>
+                  <option value="deduct">Deduct</option>
+                </select>
+                <input class="form-control form-control-sm" type="number" step="0.01" min="0.01" name="amount" placeholder="Amount" required>
+                <button class="btn btn-sm btn-user-action">Apply</button>
+              </form>
+            </td>
+            <td data-label="Actions">
+              <div class="d-flex gap-2">
+                {% if u.is_banned %}
+                <form method="post">
+                  <input type="hidden" name="admin_action" value="unban_user">
+                  <input type="hidden" name="user_id" value="{{ u.id }}">
+                  <button class="btn btn-sm btn-user-action">Unban</button>
+                </form>
+                {% else %}
+                <form method="post">
+                  <input type="hidden" name="admin_action" value="ban_user">
+                  <input type="hidden" name="user_id" value="{{ u.id }}">
+                  <button class="btn btn-sm btn-user-action">Ban</button>
+                </form>
+                {% endif %}
+                <form method="post" onsubmit="return confirm('Delete user {{ u.username }}? This will remove their orders and tickets.');">
+                  <input type="hidden" name="admin_action" value="delete_user">
+                  <input type="hidden" name="user_id" value="{{ u.id }}">
+                  <button class="btn btn-sm btn-user-action">Delete</button>
+                </form>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

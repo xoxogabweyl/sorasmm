@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="admin-hub">
+  <div class="admin-hub-shell">
+    <div class="admin-hub-toolbar">
+      <strong>Website Settings</strong>
+      <a class="btn btn-sm btn-admin-search ms-auto" href="{{ url_for('admin_dashboard') }}">Back to Dashboard</a>
+    </div>
+
+    <div class="admin-hub-panel p-3">
+      <form method="post" class="row g-3">
+        <div class="col-md-6">
+          <label class="form-label">Site name (navbar text fallback)</label>
+          <input class="form-control" name="site_name" maxlength="60" required value="{{ settings.site_name }}">
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Site title (browser tab)</label>
+          <input class="form-control" name="site_title" maxlength="120" required value="{{ settings.site_title }}">
+        </div>
+        <div class="col-12">
+          <label class="form-label">Logo URL</label>
+          <input
+            class="form-control"
+            name="site_logo_url"
+            type="url"
+            placeholder="https://example.com/logo.png or /static/logo.png"
+            value="{{ settings.site_logo_url }}"
+          >
+          <div class="small text-muted mt-1">Leave empty to show the site name text in navbar.</div>
+        </div>
+
+        <div class="col-12 pt-2">
+          <h5 class="mb-2">Payment Modes</h5>
+          <div class="small text-muted mb-2">Enable or disable payment methods shown to users.</div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" name="payment_mode_manual" value="1" id="payment_mode_manual" {% if settings.payment_mode_manual == '1' %}checked{% endif %}>
+            <label class="form-check-label" for="payment_mode_manual">Manual / Support</label>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" name="payment_mode_paypal" value="1" id="payment_mode_paypal" {% if settings.payment_mode_paypal == '1' %}checked{% endif %}>
+            <label class="form-check-label" for="payment_mode_paypal">PayPal</label>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" name="payment_mode_stripe" value="1" id="payment_mode_stripe" {% if settings.payment_mode_stripe == '1' %}checked{% endif %}>
+            <label class="form-check-label" for="payment_mode_stripe">Card (Stripe)</label>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" name="payment_mode_crypto" value="1" id="payment_mode_crypto" {% if settings.payment_mode_crypto == '1' %}checked{% endif %}>
+            <label class="form-check-label" for="payment_mode_crypto">Cryptocurrency</label>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" name="payment_mode_bank_transfer" value="1" id="payment_mode_bank_transfer" {% if settings.payment_mode_bank_transfer == '1' %}checked{% endif %}>
+            <label class="form-check-label" for="payment_mode_bank_transfer">Bank Transfer</label>
+          </div>
+        </div>
+        <div class="col-12">
+          <label class="form-label">Payment instructions</label>
+          <textarea
+            class="form-control"
+            name="payment_note"
+            rows="3"
+            maxlength="500"
+            placeholder="Example: Contact support to receive payment details."
+          >{{ settings.payment_note }}</textarea>
+        </div>
+
+        <div class="col-12 pt-2">
+          <h5 class="mb-2">Interface Colors</h5>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Brand color</label>
+          <input class="form-control form-control-color w-100" name="brand_color" type="color" value="{{ settings.brand_color }}">
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Brand dark color</label>
+          <input class="form-control form-control-color w-100" name="brand_dark_color" type="color" value="{{ settings.brand_dark_color }}">
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Accent color</label>
+          <input class="form-control form-control-color w-100" name="accent_color" type="color" value="{{ settings.accent_color }}">
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Main background</label>
+          <input class="form-control form-control-color w-100" name="bg_main_color" type="color" value="{{ settings.bg_main_color }}">
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Accent background</label>
+          <input class="form-control form-control-color w-100" name="bg_accent_color" type="color" value="{{ settings.bg_accent_color }}">
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Main text color</label>
+          <input class="form-control form-control-color w-100" name="text_main_color" type="color" value="{{ settings.text_main_color }}">
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Muted text color</label>
+          <input class="form-control form-control-color w-100" name="text_muted_color" type="color" value="{{ settings.text_muted_color }}">
+        </div>
+
+        <div class="col-12">
+          <label class="form-label">Custom CSS (advanced)</label>
+          <textarea
+            class="form-control"
+            name="custom_css"
+            rows="10"
+            placeholder=".site-navbar { border-radius: 24px; }"
+          >{{ settings.custom_css }}</textarea>
+          <div class="small text-muted mt-1">This CSS loads globally after theme variables.</div>
+        </div>
+
+        <div class="col-12 d-flex gap-2">
+          <button class="btn btn-primary" type="submit">Save Settings</button>
+          <a class="btn btn-outline-secondary" href="{{ url_for('admin_dashboard') }}">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

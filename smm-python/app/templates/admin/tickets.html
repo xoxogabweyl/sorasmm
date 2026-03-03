@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="admin-reference-page">
+  <div class="admin-reference-shell">
+    <form class="admin-reference-toolbar" method="get">
+      <strong>Ticket Management</strong>
+      <input class="form-control form-control-sm ms-2" name="q" value="{{ ticket_q or '' }}" placeholder="Search by ID, subject..." style="max-width: 220px;">
+      <select class="form-select form-select-sm" name="status" style="max-width: 150px;">
+        <option value="all" {% if (ticket_status or 'all') == 'all' %}selected{% endif %}>All status</option>
+        <option value="open" {% if ticket_status == 'open' %}selected{% endif %}>open</option>
+        <option value="answered" {% if ticket_status == 'answered' %}selected{% endif %}>answered</option>
+        <option value="closed" {% if ticket_status == 'closed' %}selected{% endif %}>closed</option>
+      </select>
+      <button type="submit" class="btn btn-sm btn-admin-search">Search</button>
+    </form>
+
+    <div class="row g-3 p-3">
+      {% for t in tickets %}
+      <div class="col-xl-6">
+        <div class="admin-hub-panel admin-reference-table p-3 h-100">
+          <div class="d-flex justify-content-between">
+            <strong>#{{ t.id }} {{ t.subject }}</strong>
+            <span class="badge text-bg-secondary">{{ t.status }}</span>
+          </div>
+          <div class="small text-muted">{{ t.user.username }} | {{ t.created_at.strftime('%Y-%m-%d %H:%M') }}</div>
+          <hr>
+          <div class="mb-2">{{ t.message }}</div>
+          <form method="post">
+            <input type="hidden" name="ticket_id" value="{{ t.id }}">
+            <textarea class="form-control mb-2" name="admin_reply" rows="3" placeholder="Reply">{{ t.admin_reply or '' }}</textarea>
+            <div class="d-flex gap-2">
+              <select class="form-select" name="status">
+                <option {% if t.status=='open' %}selected{% endif %}>open</option>
+                <option {% if t.status=='answered' %}selected{% endif %}>answered</option>
+                <option {% if t.status=='closed' %}selected{% endif %}>closed</option>
+              </select>
+              <button class="btn btn-primary">Update</button>
+            </div>
+          </form>
+        </div>
+      </div>
+      {% else %}
+      <div class="col-12"><div class="alert alert-info">No tickets found.</div></div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}
