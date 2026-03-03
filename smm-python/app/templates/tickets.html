@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block content %}
+<h3 class="mb-3">Support Tickets</h3>
+<div class="row g-3">
+  <div class="col-md-5">
+    <div class="card p-3 shadow-sm">
+      <h6>Create Ticket</h6>
+      <form method="post">
+        <div class="mb-2"><input class="form-control" name="subject" placeholder="Subject" required></div>
+        <div class="mb-2"><textarea class="form-control" name="message" rows="5" placeholder="Message" required></textarea></div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </form>
+    </div>
+  </div>
+  <div class="col-md-7">
+    <div class="card shadow-sm">
+      <div class="card-header">My Tickets</div>
+      <div class="list-group list-group-flush">
+        {% for t in tickets %}
+        <div class="list-group-item">
+          <div class="d-flex justify-content-between">
+            <strong>#{{ t.id }} {{ t.subject }}</strong>
+            <span class="badge text-bg-secondary">{{ t.status }}</span>
+          </div>
+          <div class="small text-muted mb-1">{{ t.created_at.strftime('%Y-%m-%d %H:%M') }}</div>
+          <div>{{ t.message }}</div>
+          {% if t.admin_reply %}
+            <hr><div><strong>Admin reply:</strong> {{ t.admin_reply }}</div>
+          {% endif %}
+        </div>
+        {% else %}
+        <div class="list-group-item text-center">No tickets found.</div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
