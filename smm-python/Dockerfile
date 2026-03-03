@@ -9,5 +9,6 @@ COPY requirements.txt /app/requirements.txt
 RUN pip install --no-cache-dir -r /app/requirements.txt
 
 COPY . /app
+RUN chmod +x /app/start.sh
 
-CMD ["sh", "-c", "gunicorn run:app --bind 0.0.0.0:${PORT:-8080} --workers 2"]
+CMD ["/app/start.sh"]
